@@ -7,14 +7,7 @@ The official installation guide (https://wiki.archlinux.org/index.php/Installati
 * Image from https://www.archlinux.org/
 
 ### Copy to a USB drive
-You will have to create a live USB of Arch Linux from the ISO you just downloaded. You may use Rufus tool to create the live USB in Windows.Alternatively, if you are on Linux, you can use the dd command to create a live USB. Replace /path/to/archlinux.iso with the path where you have downloaded the ISO file, and /dev/sdx with your USB drive in the example below. You can get your drive information using lsblk command.
-
-# on linux iso file
-dd bs=4M if=/path/to/archlinux.iso of=/dev/sdx status=progress && sync 
-# on linux img file
-dd if=archlinux.img of=/dev/sdX bs=16M && sync 
-
-# More at: https://wiki.archlinux.org/index.php/Dd
+# Rufus for Windows or Etcher in linux are good options.
 
 ### Boot from USB drive
 
@@ -46,9 +39,11 @@ ls /sys/firmware/efi/efivars
 fdisk -l
 
 # Create partitions
+
     cfdisk /dev/sda
-    1 500MB EFI partition # EFI type
-    2 100% size partiton # (to be encrypted) linux LVM Type.
+		
+ # 1 500MB EFI partition # EFI type
+ # 2 100% size partiton # (to be encrypted) linux LVM Type.
 
 ### Create EFI partition
 
@@ -67,13 +62,13 @@ This creates a partion for swap, a partion for root and a partion /home:
     pvcreate /dev/mapper/luks
     vgcreate vg0 /dev/mapper/luks
     lvcreate --size 1G vg0 --name swap
-		lvcreate --size 80G vg0 --name root
+    lvcreate --size 80G vg0 --name root
     lvcreate -l +100%FREE vg0 --name home
 
 ### Create filesystems on encrypted partitions
   
     mkfs.ext4 -L root /dev/mapper/vg0-root
-		mkfs.ext4 -L home /dev/mapper/vg0-home
+    mkfs.ext4 -L home /dev/mapper/vg0-home
     mkswap -L swap /dev/mapper/vg0-swap
 
 ## Mount the new system
@@ -112,24 +107,29 @@ This creates a partion for swap, a partion for root and a partion /home:
 
 ## Replacing vi with nano:
 # To replace vi with nano as the default text editor set the VISUAL and EDITOR environment variables:
+
 export VISUAL=nano
 export EDITOR=nano
 
 # Edit /etc/environment and add the foollowing: 
+
 VISUAL=nano
 EDITOR=nano
 
 ## Setup system clock and timezone:(https://wiki.archlinux.org/index.php/System_time)
 
 # To list available zones:
+
 timedatectl list-timezones
 
 # To set your time zone:
 # timedatectl set-timezone Zone/SubZone
 # Example:
+
 timedatectl set-timezone America/New_York
 
 # To enable NTP:(https://wiki.archlinux.org/index.php/Systemd-timesyncd):
+
 timedatectl set-ntp true
 
 systemctl enable systemd-timedated && systemctl enable systemd-timesyncd
@@ -191,20 +191,20 @@ echo MYHOSTNAME > /etc/hostname
     echo default arch >> /boot/loader/loader.conf
     echo timeout 5 >> /boot/loader/loader.conf
 
-## Create arch.conf (or XYZ.conf for default XYZ in loader.conf)
+## Create arch.conf:
 
     nano /boot/loader/entries/arch.conf
 
 ## Add the following content to arch.conf
 
-`<UUID>` is the the one of the raw encrypted device (/dev/nvme0n1p2). It can be found with the `blkid` command
+`<UUID>` is the the one of the raw encrypted device (/dev/sda2). It can be found with the `blkid` command
 
     title Arch Linux
     linux /vmlinuz-linux-zen
     initrd /initramfs-linux-zen.img
     options cryptdevice=UUID=<UUID>:vg0 root=/dev/mapper/vg0-root resume=/dev/mapper/vg0-swap rw
 
-### Installing KDE Plasma desktop(Optional, skip if another desktop whanted):
+### Installing KDE Plasma desktop and some extras (Optional, skip if another desktop whanted):
 
 pacman -S xorg plasma plasma-wayland-session baloo powerdevil sddm sddm-kcm kdepim kde-gtk-config kdeplasma-addons networkmanager plasma-nm kdenetwork-filesharing kdegraphics-thumbnailers ffmpegthumbs cifs-utils print-manager cups system-config-printer packagekit-qt5 ttf-dejavu phonon-qt5-vlc breeze-gtk breeze-kde4 kde-gtk-config libreoffice-fresh gwenview kipi-plugins digikam vlc git firefox && systemctl enable sddm.service && systemctl enable NetworkManager.service
 
