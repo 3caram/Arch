@@ -1,0 +1,208 @@
+## Install ARCH Linux with encrypted file-system and UEFI
+
+The official installation guide (https://wiki.archlinux.org/index.php/Installation_Guide) contains a more verbose description.
+
+## Download the Arch ISO
+
+* Image from https://www.archlinux.org/
+
+### Copy to a USB drive
+You will have to create a live USB of Arch Linux from the ISO you just downloaded. You may use Rufus tool to create the live USB in Windows.Alternatively, if you are on Linux, you can use the dd command to create a live USB. Replace /path/to/archlinux.iso with the path where you have downloaded the ISO file, and /dev/sdx with your USB drive in the example below. You can get your drive information using lsblk command.
+
+# on linux iso file
+dd bs=4M if=/path/to/archlinux.iso of=/dev/sdx status=progress && sync 
+# on linux img file
+dd if=archlinux.img of=/dev/sdX bs=16M && sync 
+
+### Boot from USB drive
+
+If the usb fails to boot, make sure that secure boot is disabled in the BIOS configuration.
+
+### The default keyboard layout in the live session is US. To list all the supported keyboard layout:
+ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
+
+# And then change the layout to the an appropriate one using loadkeys command. For us alt, int:
+loadkeys us-acentos
+
+### Check if you have UEFI mode enabled--> More at: https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
+
+ls /sys/firmware/efi/efivars
+
+If this directory exists, you have a UEFI enabled system.
+
+### Partition the disks:
+
+#List all the disk and partitions on your system:
+fdisk -l
+# Create partitions
+    cfdisk /dev/sda
+    1 100MB EFI partition # EFI type
+    2 100% size partiton # (to be encrypted) linux LVM Type.
+
+### Create EFI partition
+
+    mkfs.vfat -F32 -n EFI /dev/sda1
+
+### Setup the encryption of the system with 256 bit effective size
+
+Note: Many NVMe drives can exceed 2GB/s, consider your crypto algorithm wisely, review `cryptsetup benchmark`, the defaults are viewable end of  `cryptsetup --help`, defaults are commonly the fastest with good security from my experience with cryptsetup (AES 256, sha256, 2000ms)
+  
+    cryptsetup --use-random luksFormat /dev/sda2
+    cryptsetup luksOpen /dev/nvme0n1p2 luks
+
+### Create encrypted partitions
+
+This creates a partion for swap, a partion for root and a partion /home:
+
+    pvcreate /dev/mapper/luks
+    vgcreate vg0 /dev/mapper/luks
+    lvcreate --size 1G vg0 --name swap
+		lvcreate --size 80G vg0 --name root
+    lvcreate -l +100%FREE vg0 --name home
+
+### Create filesystems on encrypted partitions
+  
+    mkfs.ext4 -L root /dev/mapper/vg0-root
+		mkfs.ext4 -L home /dev/mapper/vg0-home
+    mkswap -L swap /dev/mapper/vg0-swap
+
+## Mount the new system
+
+    mkdir /mnt/boot && mount /dev/sda1 /mnt/boot # /the EFI boot
+		mount /dev/mapper/vg0-root /mnt # /mnt is the installed system
+		mkdir /mnt/home && mount /dev/mapper/vg0-home /mnt/home # /mnt/home is the /home for installed system
+    swapon /dev/mapper/vg0-swap # Not needed but a good thing to test
+
+## Select an appropriate mirror
+# Sync the pacman repository:
+		
+		pacman -Sy
+
+# Now, install reflector(https://wiki.archlinux.org/index.php/Reflector) , to list the fresh and fast mirrors:
+		
+		yes | pacman -S reflector
+
+# Get the good mirror list with reflector and save it to mirrorlist. US is used.
+
+reflector -c "US" -f 12 -l 10 -n 12 --sort rate --save /etc/pacman.d/mirrorlist  
+
+## Install the system 
+
+# Installs linux-zen(https://wiki.archlinux.org/index.php/Kernel):
+	pacstrap /mnt linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo efibootmgr lvm2 vim nano nano-syntax-highlighting
+
+## Generate fstab
+
+    genfstab -U /mnt >> /mnt/etc/fstab
+
+## Enter the new system
+
+    arch-chroot /mnt	
+
+## Replacing vi with nano:
+# To replace vi with nano as the default text editor for commands such as visudo, set the VISUAL and EDITOR environment variables:
+export VISUAL=nano
+export EDITOR=nano
+
+# Edit /etc/environment and add the foollowing: 
+VISUAL=nano
+EDITOR=nano
+
+## Setup system clock and timezone:(https://wiki.archlinux.org/index.php/System_time)
+
+# To list available zones:
+timedatectl list-timezones
+
+# To set your time zone:
+# timedatectl set-timezone Zone/SubZone
+# Example:
+timedatectl set-timezone America/New_York
+
+# To enable NTP:(https://wiki.archlinux.org/index.php/Systemd-timesyncd):
+timedatectl set-ntp true
+
+systemctl enable systemd-timedated && systemctl enable systemd-timesyncd
+
+## Set the hostname
+
+    echo MYHOSTNAME > /etc/hostname
+
+## Generate locale
+
+Uncomment wanted locales in /etc/locale.gen
+
+    nano /etc/locale.gen
+    locale-gen
+    localectl set-locale LANG=en_US.UTF-8
+
+To avoid problems with gnome-terminal set locale system wide
+Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters
+Pay attention to the UTF-8. Capital letters !
+
+    echo LANG=en_US.UTF-8 >> /etc/locale.conf
+    echo LC_ALL= >> /etc/locale.conf
+
+
+## Set password for root
+
+    passwd
+
+## Add user(https://wiki.archlinux.org/index.php/Users_and_groups):
+# set the password for the root account using the passwd command:
+
+passwd
+
+# Add a system user:
+
+	useradd -m -g users -G wheel,storage,network,uucp,games,power,optical,scanner,lp,audio,video -s /bin/bash MYUSERNAME && passwd MYUSERNAME
+
+# Allow the system user to use sudo and run commands (temporary) as root:
+
+	EDITOR=nano visudo
+
+# Press CTRL + W and type wheel, then uncomment the following line:
+
+%wheel ALL=(ALL ALL)
+
+## Configure mkinitcpio with modules needed for the initrd image
+# Important: lvm2 must be installed inside the arch-chroot for mkinitcpio to find the lvm2 or mkinitcpio will output Error: Hook 'lvm2' cannot be found
+   
+	 nano /etc/mkinitcpio.conf
+
+* Add 'ext4' to MODULES
+* Add 'encrypt' and 'lvm2' to HOOKS before filesystems
+* Add 'resume' after 'lvm2' (also has to be after 'udev')
+
+## Regenerate initrd image
+
+    mkinitcpio -p linux
+
+## Setup systembootd (grub will not work on nvme at this moment)
+
+    bootctl --path=/boot install
+
+## Create loader.conf
+
+    echo default arch >> /boot/loader/loader.conf
+    echo timeout 5 >> /boot/loader/loader.conf
+
+## Create arch.conf (or XYZ.conf for default XYZ in loader.conf)
+
+    nano /boot/loader/entries/arch.conf
+
+## Add the following content to arch.conf
+
+`<UUID>` is the the one of the raw encrypted device (/dev/nvme0n1p2). It can be found with the `blkid` command
+
+    title Arch Linux
+    linux /vmlinuz-linux-zen
+    initrd /initramfs-linux-zen.img
+    options cryptdevice=UUID=<UUID>:vg0 root=/dev/mapper/vg0-root resume=/dev/mapper/vg0-swap rw
+
+### Installing KDE Plasma desktop and exiting chroot:
+
+pacman -S xorg plasma plasma-wayland-session baloo powerdevil sddm sddm-kcm kdepim kde-gtk-config kdeplasma-addons networkmanager plasma-nm kdenetwork-filesharing kdegraphics-thumbnailers ffmpegthumbs cifs-utils print-manager cups system-config-printer packagekit-qt5 ttf-dejavu phonon-qt5-vlc breeze-gtk breeze-kde4 kde-gtk-config libreoffice-fresh gwenview kipi-plugins digikam vlc git firefox && systemctl enable sddm.service && systemctl enable NetworkManager.service && exit
+
+### Turn off:
+
+shutdown now
