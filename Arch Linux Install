@@ -14,29 +14,40 @@ dd bs=4M if=/path/to/archlinux.iso of=/dev/sdx status=progress && sync
 # on linux img file
 dd if=archlinux.img of=/dev/sdX bs=16M && sync 
 
+# More at: https://wiki.archlinux.org/index.php/Dd
+
 ### Boot from USB drive
 
 If the usb fails to boot, make sure that secure boot is disabled in the BIOS configuration.
 
 ### The default keyboard layout in the live session is US. To list all the supported keyboard layout:
+
 ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
-# And then change the layout to the an appropriate one using loadkeys command. For us alt, int:
+# And then change the layout to the an appropriate one using loadkeys command. For US alt,int:
+
 loadkeys us-acentos
+
+# More at: https://wiki.archlinux.org/index.php/Linux_console/Keyboard_configuration#Loadkeys
 
 ### Check if you have UEFI mode enabled--> More at: https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
 
 ls /sys/firmware/efi/efivars
 
-If this directory exists, you have a UEFI enabled system.
+# If this directory exists, you have a UEFI enabled system.
+
+# More at: https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
 
 ### Partition the disks:
+# More info on partitioning formats and schemes: https://wiki.archlinux.org/index.php/Partitioning#Partition_scheme
 
-#List all the disk and partitions on your system:
+# List all the disk and partitions on your system, will tell you if is /dev/sda or something else:
+
 fdisk -l
+
 # Create partitions
     cfdisk /dev/sda
-    1 100MB EFI partition # EFI type
+    1 500MB EFI partition # EFI type
     2 100% size partiton # (to be encrypted) linux LVM Type.
 
 ### Create EFI partition
@@ -44,13 +55,12 @@ fdisk -l
     mkfs.vfat -F32 -n EFI /dev/sda1
 
 ### Setup the encryption of the system with 256 bit effective size
-
-Note: Many NVMe drives can exceed 2GB/s, consider your crypto algorithm wisely, review `cryptsetup benchmark`, the defaults are viewable end of  `cryptsetup --help`, defaults are commonly the fastest with good security from my experience with cryptsetup (AES 256, sha256, 2000ms)
   
     cryptsetup --use-random luksFormat /dev/sda2
-    cryptsetup luksOpen /dev/nvme0n1p2 luks
+    cryptsetup luksOpen /dev/sda2 luks
 
 ### Create encrypted partitions
+# More info and to try different options: https://wiki.archlinux.org/index.php/Dm-crypt
 
 This creates a partion for swap, a partion for root and a partion /home:
 
@@ -68,39 +78,40 @@ This creates a partion for swap, a partion for root and a partion /home:
 
 ## Mount the new system
 
-    mkdir /mnt/boot && mount /dev/sda1 /mnt/boot # /the EFI boot
-		mount /dev/mapper/vg0-root /mnt # /mnt is the installed system
-		mkdir /mnt/home && mount /dev/mapper/vg0-home /mnt/home # /mnt/home is the /home for installed system
-    swapon /dev/mapper/vg0-swap # Not needed but a good thing to test
+	mkdir /mnt/boot && mount /dev/sda1 /mnt/boot # /the EFI boot
+	mount /dev/mapper/vg0-root /mnt # /mnt is the installed system
+	mkdir /mnt/home && mount /dev/mapper/vg0-home /mnt/home # /mnt/home is the /home for installed system
+	swapon /dev/mapper/vg0-swap # Not needed but a good thing to test
 
 ## Select an appropriate mirror
 # Sync the pacman repository:
 		
-		pacman -Sy
+	pacman -Sy
 
 # Now, install reflector(https://wiki.archlinux.org/index.php/Reflector) , to list the fresh and fast mirrors:
 		
-		yes | pacman -S reflector
+	yes | pacman -S reflector
 
 # Get the good mirror list with reflector and save it to mirrorlist. US is used.
+# More refelector options: https://wiki.archlinux.org/index.php/Reflector
 
-reflector -c "US" -f 12 -l 10 -n 12 --sort rate --save /etc/pacman.d/mirrorlist  
+	reflector -c "US" -f 12 -l 10 -n 12 --sort rate --save /etc/pacman.d/mirrorlist  
 
 ## Install the system 
+# It Installs linux-zen(https://wiki.archlinux.org/index.php/Kernel):
 
-# Installs linux-zen(https://wiki.archlinux.org/index.php/Kernel):
-	pacstrap /mnt linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo efibootmgr lvm2 vim nano nano-syntax-highlighting
+	pacstrap /mnt linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo efibootmgr lvm2 nano nano-syntax-highlighting
 
 ## Generate fstab
 
-    genfstab -U /mnt >> /mnt/etc/fstab
+  genfstab -U /mnt >> /mnt/etc/fstab
 
 ## Enter the new system
 
-    arch-chroot /mnt	
+  arch-chroot /mnt	
 
 ## Replacing vi with nano:
-# To replace vi with nano as the default text editor for commands such as visudo, set the VISUAL and EDITOR environment variables:
+# To replace vi with nano as the default text editor set the VISUAL and EDITOR environment variables:
 export VISUAL=nano
 export EDITOR=nano
 
@@ -125,32 +136,26 @@ systemctl enable systemd-timedated && systemctl enable systemd-timesyncd
 
 ## Set the hostname
 
-    echo MYHOSTNAME > /etc/hostname
+echo MYHOSTNAME > /etc/hostname
 
 ## Generate locale
+# More at: https://wiki.archlinux.org/index.php/Locale
+# Uncomment wanted locales in /etc/locale.gen
+	
+	nano /etc/locale.gen
+	locale-gen
+	localectl set-locale LANG=en_US.UTF-8
 
-Uncomment wanted locales in /etc/locale.gen
-
-    nano /etc/locale.gen
-    locale-gen
-    localectl set-locale LANG=en_US.UTF-8
-
-To avoid problems with gnome-terminal set locale system wide
-Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters
-Pay attention to the UTF-8. Capital letters !
+# To set locale system wide( Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters)
+# Pay attention to the UTF-8. Capital letters!
 
     echo LANG=en_US.UTF-8 >> /etc/locale.conf
     echo LC_ALL= >> /etc/locale.conf
-
-
-## Set password for root
-
-    passwd
-
+		
 ## Add user(https://wiki.archlinux.org/index.php/Users_and_groups):
 # set the password for the root account using the passwd command:
 
-passwd
+	passwd
 
 # Add a system user:
 
@@ -162,7 +167,7 @@ passwd
 
 # Press CTRL + W and type wheel, then uncomment the following line:
 
-%wheel ALL=(ALL ALL)
+	%wheel ALL=(ALL ALL)
 
 ## Configure mkinitcpio with modules needed for the initrd image
 # Important: lvm2 must be installed inside the arch-chroot for mkinitcpio to find the lvm2 or mkinitcpio will output Error: Hook 'lvm2' cannot be found
@@ -199,9 +204,13 @@ passwd
     initrd /initramfs-linux-zen.img
     options cryptdevice=UUID=<UUID>:vg0 root=/dev/mapper/vg0-root resume=/dev/mapper/vg0-swap rw
 
-### Installing KDE Plasma desktop and exiting chroot:
+### Installing KDE Plasma desktop(Optional, skip if another desktop whanted):
 
-pacman -S xorg plasma plasma-wayland-session baloo powerdevil sddm sddm-kcm kdepim kde-gtk-config kdeplasma-addons networkmanager plasma-nm kdenetwork-filesharing kdegraphics-thumbnailers ffmpegthumbs cifs-utils print-manager cups system-config-printer packagekit-qt5 ttf-dejavu phonon-qt5-vlc breeze-gtk breeze-kde4 kde-gtk-config libreoffice-fresh gwenview kipi-plugins digikam vlc git firefox && systemctl enable sddm.service && systemctl enable NetworkManager.service && exit
+pacman -S xorg plasma plasma-wayland-session baloo powerdevil sddm sddm-kcm kdepim kde-gtk-config kdeplasma-addons networkmanager plasma-nm kdenetwork-filesharing kdegraphics-thumbnailers ffmpegthumbs cifs-utils print-manager cups system-config-printer packagekit-qt5 ttf-dejavu phonon-qt5-vlc breeze-gtk breeze-kde4 kde-gtk-config libreoffice-fresh gwenview kipi-plugins digikam vlc git firefox && systemctl enable sddm.service && systemctl enable NetworkManager.service
+
+###Exiting chroot:
+
+exit
 
 ### Turn off:
 
