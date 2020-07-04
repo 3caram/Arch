@@ -100,7 +100,7 @@ This creates a partion for root and a partion /home:
 # It installs amd-ucode for amd, for intel would be intel-ucode (https://wiki.archlinux.org/index.php/microcode)
 
 
-	pacstrap /mnt linux-lts linux-lts-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub dosfstools os-prober mtools lvm2 amd-ucode iproute2 nano nano-syntax-highlighting
+	pacstrap /mnt linux-lts linux-lts-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 amd-ucode iproute2 nano nano-syntax-highlighting
 	
 ## Enter the new system
 
@@ -215,8 +215,7 @@ hostnamectl set-hostname MYHOSTNAME
 ### Set up Grub:
 # Edit /etc/default/grub
 # Uncomment GRUB_ENABLE_CRYPTODISK=y
-# Edit GRUP_CMD_LINUX_DEFAULT as the img in the link: https://ibb.co/xMLvD6R
-# Use /dev/sda3:vol0:allow-discards
+# set as follow : GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda3:vol0:allow-discards quiet acpi_backlight=vendor"
 
 	mkdir /boot/EFI && mount /dev/sda1 /boot/EFI
 	grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
@@ -226,14 +225,17 @@ hostnamectl set-hostname MYHOSTNAME
 	
 ### Installing KDE Plasma desktop and some extras (Optional, skip if another desktop whanted):
 
-	pacman -S mesa xorg plasma plasma-wayland-session sddm networkmanager packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox && systemctl enable sddm.service && systemctl enable NetworkManager.service
+	pacman -S mesa xorg plasma plasma-wayland-session sddm  konsole hunspell xdg-user-dirs networkmanager packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox && systemctl enable sddm.service && systemctl enable NetworkManager.service
 
 ###Exiting chroot:
 exit
-
+ 
 ### Umount everything
 umount -a
 
 ### Turn off:
 
 poweroff
+
+### Post install misc soft install:
+pacman - S kate dolphin dolphin-plugins kompare kdegraphics-thumbnailers kimageformats qt5-imageformats kdesdk-thumbnailers ffmpegthumbs raw-thumbnailer taglib
