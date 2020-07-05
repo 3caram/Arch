@@ -78,9 +78,8 @@ $ cfdisk /dev/sda
 
 ### Create filesystems on encrypted partitions
   
-  $ mkfs.ext4 /dev/vol0/vol_root
-  $ mkfs.ext4 /dev/vol0/vol_home
-
+  	$ mkfs.ext4 /dev/vol0/vol_root && mkfs.ext4 /dev/vol0/vol_home
+		
 ## Mount the new system
 
 	$ mount /dev/vol0/vol_root /mnt
