@@ -101,7 +101,7 @@ $ cfdisk /dev/sda
 # It installs zsh, (https://wiki.archlinux.org/index.php/microcode)
 
 
-$ pacstrap /mnt amd-ucode zsh zsh-completions grml-zsh-config linux-lts linux-lts-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 iproute2 networkmanager nano nano-syntax-highlighting
+$ pacstrap /mnt amd-ucode zsh zsh-completions grml-zsh-config linux-lts linux-lts-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 iproute2 networkmanager nano nano-syntax-highlighting reflector
 	
 ## Enter the new system
 # Note: have to try to $ arch-chroot arch-chroot /mnt $(which zsh)
