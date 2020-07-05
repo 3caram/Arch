@@ -1,7 +1,5 @@
 ### Install Yay:
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
+git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
 
 ### Display colored output:
 Make sure you have the Color option in your /etc/pacman.conf
