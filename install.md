@@ -61,8 +61,8 @@ $ cfdisk /dev/sda
  # 2 100% size partiton # LVM type (to be encrypted).
 
 ### Create EFI & boot partitions
-	$ mkfs.vfat -F32 /dev/sda1
-	$ mkfs.ext4 /dev/sda2
+
+	$ mkfs.vfat -F32 /dev/sda1 && mkfs.ext4 /dev/sda2
 
 ### Create encrypted partitions
 # More info and to try different options: https://wiki.archlinux.org/index.php/Dm-crypt
