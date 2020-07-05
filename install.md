@@ -61,22 +61,20 @@ $ cfdisk /dev/sda
  # 2 100% size partiton # LVM type (to be encrypted).
 
 ### Create EFI & boot partitions
-
- $ mkfs.vfat -F32 /dev/sda1
- $ mkfs.ext4 /dev/sda2
+	$ mkfs.vfat -F32 /dev/sda1
+	$ mkfs.ext4 /dev/sda2
 
 ### Create encrypted partitions
 # More info and to try different options: https://wiki.archlinux.org/index.php/Dm-crypt
-  
- $ cryptsetup luksFormat /dev/sda3
- $ cryptsetup luksOpen /dev/sda3 luks
+	$ cryptsetup luksFormat /dev/sda3
+	$ cryptsetup luksOpen /dev/sda3 luks
 
 # This creates a partion for root and a partion /home:
 
-  $ pvcreate --dataalignment 1m /dev/mapper/luks
-  $ vgcreate vol0 /dev/mapper/luks
-  $ lvcreate -L 60GB vol0 -n vol_root
-  $ lvcreate -l 100%FREE vol0 -n vol_home
+	$ pvcreate --dataalignment 1m /dev/mapper/luks
+	$ vgcreate vol0 /dev/mapper/luks
+	$ lvcreate -L 60GB vol0 -n vol_root
+	$ lvcreate -l 100%FREE vol0 -n vol_home
 
 ### Create filesystems on encrypted partitions
   
@@ -91,8 +89,8 @@ $ cfdisk /dev/sda
 	$ mkdir /mnt/etc
 	
 ## Generate fstab
-
-  $ genfstab -U -p /mnt >> /mnt/etc/fstab
+	
+	$ genfstab -U -p /mnt >> /mnt/etc/fstab
 	
 ## Install the system 
 # It installs linux-lts(https://wiki.archlinux.org/index.php/Kernel):
@@ -101,23 +99,24 @@ $ cfdisk /dev/sda
 # It installs zsh, (https://wiki.archlinux.org/index.php/microcode)
 
 
-$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-lts linux-lts-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 iproute2 networkmanager nano nano-syntax-highlighting reflector
+	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-lts linux-lts-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 iproute2 networkmanager nano nano-syntax-highlighting reflector
 	
 ## Enter the new system
 # Note: have to try to $ arch-chroot arch-chroot /mnt $(which zsh)
   
-$ arch-chroot /mnt 
+	$ arch-chroot /mnt 
 	
 # To know what mount points are listed.
 
-$ cat /etc/fstab
+	$ cat /etc/fstab
 	
 # To know what partitions are actually mounted.
-$ cat /proc/mounts
+	
+	$ cat /proc/mounts
 	
 ## If any partition is NOT correctly listed:
 
-$ rm /etc/fstab
+	$ rm /etc/fstab
 	
 # mount the partitions inside the chroot:
 # exit chroot
@@ -133,16 +132,16 @@ EDITOR=nano
 
 ## Setup systemd-swap:
 
-$ nano /etc/systemd/swap.conf
+	$ nano /etc/systemd/swap.conf
 
 # Uncoment all zswap and swapfc, uncoment zram_enable=0
 
-$ systemctl enable systemd-swap
+	$ systemctl enable systemd-swap
 
 ## Configure mkinitcpio with modules needed for the initrd image
 # Important: lvm2 must be installed inside the arch-chroot for mkinitcpio to find the lvm2 or mkinitcpio will output Error: Hook 'lvm2' cannot be found
    
-$ nano /etc/mkinitcpio.conf
+	$ nano /etc/mkinitcpio.conf
 
 # Edit the /etc/mkinitcpio.conf
 # Look for the HOOKS variable and add encrypt and lvm2 after keyboard. Like:
@@ -151,7 +150,7 @@ $ nano /etc/mkinitcpio.conf
 
 ## Regenerate initrd image
 
-	mkinitcpio -p linux-lts
+	$ mkinitcpio -p linux-lts
     
 ## Generate locale
 # More at: https://wiki.archlinux.org/index.php/Locale
@@ -186,24 +185,23 @@ $ nano /etc/mkinitcpio.conf
 ## Setup system clock and timezone:(https://wiki.archlinux.org/index.php/System_time)
 # To list available zones:
 
-$ timedatectl list-timezones
+	$ timedatectl list-timezones
 
 # To set your time zone:
 # timedatectl set-timezone Zone/SubZone
 # Example:
 
-$ timedatectl set-timezone America/New_York
+	$ timedatectl set-timezone America/New_York
 
 # To enable NTP:(https://wiki.archlinux.org/index.php/Systemd-timesyncd):
 
-$ timedatectl set-ntp true
-
-$ systemctl enable systemd-timedated && systemctl enable systemd-timesyncd
+	$ timedatectl set-ntp true
+	$ systemctl enable systemd-timedated && systemctl enable systemd-timesyncd
 
 ## Set the hostname
 
-$ echo MYHOSTNAME > /etc/hostname
-$ hostnamectl set-hostname MYHOSTNAME
+	$ echo MYHOSTNAME > /etc/hostname
+	$ hostnamectl set-hostname MYHOSTNAME
 
 ## Setup network:
 # Edit /etc/hosts, add:
@@ -223,6 +221,7 @@ $ hostnamectl set-hostname MYHOSTNAME
 	$ grub-mkconfig -o /boot/grub/grub.cfg
 	
 ### Install Yay:
+	
 	$ cd /tmp && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
 	
 ### Installing KDE Plasma desktop and some extras (Optional, skip if another desktop whanted):
@@ -230,6 +229,7 @@ $ hostnamectl set-hostname MYHOSTNAME
 	$ pacman -S mesa xorg plasma plasma-wayland-session sddm  konsole hunspell xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox && systemctl enable sddm.service && systemctl enable NetworkManager.service
 
 ###Exiting chroot:
+
 	$ exit
  
 ### Umount everything
