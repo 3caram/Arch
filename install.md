@@ -34,7 +34,7 @@ $ ls /sys/firmware/efi/efivars
 ## Select an appropriate mirror
 # Sync the pacman repository:
 		
-$ pacman -Syy
+$ pacman -Syu
 
 # Now, install reflector(https://wiki.archlinux.org/index.php/Reflector) , to list the fresh and fast mirrors:
 		
@@ -43,7 +43,7 @@ $ yes | pacman -S reflector
 # Get the good mirror list with reflector and save it to mirrorlist. US is used.
 # More refelector options: https://wiki.archlinux.org/index.php/Reflector
 
-$ reflector -c "US" -f 12 -l 10 -n 12 --sort rate --save /etc/pacman.d/mirrorlist
+$ reflector -c "US" -c "CA" -f 24 -l 20 -n 24 --sort rate --save /etc/pacman.d/mirrorlist
 
 ### Partition the disks:
 # More info on partitioning formats and schemes: https://wiki.archlinux.org/index.php/Partitioning#Partition_scheme
