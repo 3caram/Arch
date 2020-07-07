@@ -54,11 +54,11 @@ $ fdisk -l
 
 # Create partitions
 
-$ cfdisk /dev/sda
+	$ cfdisk /dev/sda
 		
- # 1 200MB EFI partition # EFI type
- # 2 300MB Boot partiton # Linux type
- # 2 100% size partiton # LVM type (to be encrypted).
+	1 200MB EFI partition # EFI type
+	2 300MB Boot partiton # Linux type
+	2 100% size partiton # LVM type (to be encrypted).
 
 ### Create EFI & boot partitions
 
@@ -203,15 +203,17 @@ EDITOR=nano
 	$ hostnamectl set-hostname MYHOSTNAME
 
 ## Setup network:
-# Edit /etc/hosts, add:
-127.0.0.1        localhost
-::1              localhost
-127.0.1.1        myhostname
+	Edit /etc/hosts, add:
+	127.0.0.1        localhost
+	::1              localhost
+	127.0.1.1        myhostname
 		
 ### Set up Grub:
 # Edit /etc/default/grub
-# Uncomment GRUB_ENABLE_CRYPTODISK=y
-# set as follow : GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda3:vol0:allow-discards quiet acpi_backlight=vendor"
+# Uncomment:
+	GRUB_ENABLE_CRYPTODISK=y
+# set as follow : 
+	GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda3:vol0:allow-discards quiet acpi_backlight=vendor"
 
 	$ mkdir /boot/EFI && mount /dev/sda1 /boot/EFI
 	$ grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
