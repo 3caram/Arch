@@ -34,16 +34,12 @@ $ ls /sys/firmware/efi/efivars
 ## Select an appropriate mirror
 # Sync the pacman repository:
 		
-$ pacman -Syu
+$ yes | pacman -Syy
 
-# Now, install reflector(https://wiki.archlinux.org/index.php/Reflector) , to list the fresh and fast mirrors:
-		
-$ yes | pacman -S reflector
-
-# Get the good mirror list with reflector and save it to mirrorlist. US is used.
-# More refelector options: https://wiki.archlinux.org/index.php/Reflector
-
-$ reflector -c "US" -c "CA" -f 24 -l 20 -n 24 --sort rate --save /etc/pacman.d/mirrorlist
+# Now, install reflector(https://wiki.archlinux.org/index.php/Reflector):
+# Get the good mirror list with reflector and save it to mirrorlist. US and CA is used.
+	
+$ yes | pacman -S reflector && reflector -c "US" -c "CA" -f 24 -l 20 -n 24 --sort rate --save /etc/pacman.d/mirrorlist
 
 ### Partition the disks:
 # More info on partitioning formats and schemes: https://wiki.archlinux.org/index.php/Partitioning#Partition_scheme
@@ -92,18 +88,18 @@ $ fdisk -l
 	$ genfstab -U -p /mnt >> /mnt/etc/fstab
 	
 ## Install the system 
-# It installs linux-lts(https://wiki.archlinux.org/index.php/Kernel):
+# It installs linux-zen(https://wiki.archlinux.org/index.php/Kernel):
 # It installs systemd-swap(https://github.com/Nefelim4ag/systemd-swap/blob/master/README.md#about-configuration):
 # It installs amd-ucode for amd, for intel would be intel-ucode (https://wiki.archlinux.org/index.php/microcode)
 # It installs zsh, (https://wiki.archlinux.org/index.php/microcode)
 
 
-	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-lts linux-lts-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 iproute2 networkmanager nano nano-syntax-highlighting reflector
+	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 iproute2 networkmanager nano nano-syntax-highlighting reflector git
 	
 ## Enter the new system
 # Note: have to try to $ arch-chroot arch-chroot /mnt $(which zsh)
   
-	$ arch-chroot /mnt 
+	$ arch-chroot /mnt $(which zsh)
 	
 # To know what mount points are listed.
 
@@ -119,15 +115,13 @@ $ fdisk -l
 	
 # mount the partitions inside the chroot:
 # exit chroot
-# rund genfstab -U -p /mnt >> /mnt/etc/fstab again and reenter the chroot.
+# run genfstab -U -p /mnt >> /mnt/etc/fstab again and reenter the chroot.
 
 ## Replacing vi with nano:
 # To replace vi with nano as the default text editor set the VISUAL and EDITOR environment variables:
-# Edit /etc/environment and add the foollowing: 
 
-VISUAL=nano
-EDITOR=nano
-
+	$ echo EDITOR=nano >> /etc/environment
+	$ echo VISUAL=nano >> /etc/environment
 
 ## Setup systemd-swap:
 
@@ -149,7 +143,7 @@ EDITOR=nano
 
 ## Regenerate initrd image
 
-	$ mkinitcpio -p linux-lts
+	$ mkinitcpio -p linux-zen
     
 ## Generate locale
 # More at: https://wiki.archlinux.org/index.php/Locale
@@ -213,21 +207,17 @@ EDITOR=nano
 # Uncomment:
 	GRUB_ENABLE_CRYPTODISK=y
 # set as follow : 
-	GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda3:vol0:allow-discards quiet acpi_backlight=vendor"
+	GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda3:vol0:allow-discards acpi_backlight=vendor quiet"
 
 	$ mkdir /boot/EFI && mount /dev/sda1 /boot/EFI
 	$ grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
 	$ mkdir /boot/grub/locale
-	$ cp /usr/share/locale/en\@quot/LC_MESSAGES/gub.mo /boot/grub/locale/en.mo
+	$ cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
 	$ grub-mkconfig -o /boot/grub/grub.cfg
-	
-### Install Yay:
-	
-	$ cd /tmp && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
-	
+		
 ### Installing KDE Plasma desktop and some extras (Optional, skip if another desktop whanted):
 
-	$ pacman -S mesa xorg plasma plasma-wayland-session sddm  konsole hunspell xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox && systemctl enable sddm.service && systemctl enable NetworkManager.service
+	$ pacman -S mesa xorg plasma plasma-wayland-session sddm konsole hunspell hunspell-en_US xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox 		thunderbird && systemctl enable sddm.service && systemctl enable NetworkManager.service
 
 ###Exiting chroot:
 
