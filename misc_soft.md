@@ -1,6 +1,6 @@
 ### Post install misc soft install:
 
-    $ sudo -Syu && sudo pacman -S mc aspell cabextract cdparanoia cdrkit cvs p7zip python-boto python-pytz samba unace unarj unrar zip kate dolphin dolphin-plugins kompare kdegraphics-thumbnailers kimageformats qt5-imageformats kdesdk-thumbnailers ffmpegthumbs raw-thumbnailer taglib curl wget go
+    $ sudo pacman -Syu && sudo pacman -S mc aspell cabextract cdparanoia cdrkit cvs p7zip python-boto python-pytz samba unace unarj unrar zip kate dolphin dolphin-plugins kompare kdegraphics-thumbnailers kimageformats qt5-imageformats kdesdk-thumbnailers ffmpegthumbs raw-thumbnailer taglib curl wget go
 
 ### Post install ZSH:
     $ sudo pacman -S  zsh zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config zsh-syntax-highlighting zsh-autosuggestions
