@@ -14,7 +14,7 @@ The official installation guide (https://wiki.archlinux.org/index.php/Installati
 If the usb fails to boot, make sure that secure boot is disabled in the BIOS configuration.
 
 ### If have another pc on the same network, is easier to install whith ssh terminal, having the ability to copy and paste:
-# Skip this to tupe directly the commands on target machine.
+# Skip this to type directly the commands on target machine.
 # Permit root login
 # Check if “permit root login” is present and uncommented in “/etc/ssh/sshd_config”
 
@@ -90,15 +90,12 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
 ### Create encrypted partitions
 # More info and to try different options: https://wiki.archlinux.org/index.php/Dm-crypt
-	$ cryptsetup luksFormat /dev/sda3
-	$ cryptsetup luksOpen /dev/sda3 luks
+	$ cryptsetup luksFormat /dev/sda3 && cryptsetup luksOpen /dev/sda3 luks
 
 # This creates a partion for root and a partion /home:
 
-	$ pvcreate --dataalignment 1m /dev/mapper/luks
-	$ vgcreate vol0 /dev/mapper/luks
-	$ lvcreate -L 60GB vol0 -n vol_root
-	$ lvcreate -l 100%FREE vol0 -n vol_home
+	$ pvcreate --dataalignment 1m /dev/mapper/luks && vgcreate vol0 /dev/mapper/luks
+	$ lvcreate -L 60GB vol0 -n vol_root && lvcreate -l 100%FREE vol0 -n vol_home
 
 ### Create filesystems on encrypted partitions
   
@@ -106,10 +103,8 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 		
 ## Mount the new system
 
-	$ mount /dev/vol0/vol_root /mnt
-	$ mkdir /mnt/boot && mount /dev/sda2 /mnt/boot
-	$ mkdir /mnt/home && mount /dev/vol0/vol_home /mnt/home
-	$ mkdir /mnt/etc
+	$ mount /dev/vol0/vol_root /mnt && mkdir /mnt/boot && mount /dev/sda2 /mnt/boot
+	$ mkdir /mnt/home && mount /dev/vol0/vol_home /mnt/home && mkdir /mnt/etc
 	
 ## Generate fstab
 	
@@ -148,8 +143,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 ## Replacing vi with nano:
 # To replace vi with nano as the default text editor set the VISUAL and EDITOR environment variables:
 
-	$ echo EDITOR=nano >> /etc/environment
-	$ echo VISUAL=nano >> /etc/environment
+	$ echo EDITOR=nano >> /etc/environment && echo VISUAL=nano >> /etc/environment
 
 ## Setup systemd-swap:
 
@@ -183,8 +177,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 # To set locale system wide( Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters)
 # Pay attention to the UTF-8. Capital letters!
 
-	$ echo LANG=en_US.UTF-8 >> /etc/locale.conf
-	$ echo LC_ALL= >> /etc/locale.conf
+	$ echo LANG=en_US.UTF-8 >> /etc/locale.conf && echo LC_ALL= >> /etc/locale.conf
     
 ## Add user(https://wiki.archlinux.org/index.php/Users_and_groups):
 # set the password for the root account using the passwd command:
@@ -205,8 +198,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
 ## Set the hostname
 
-	$ echo MYHOSTNAME > /etc/hostname
-	$ hostnamectl set-hostname MYHOSTNAME
+	$ echo MYHOSTNAME > /etc/hostname && hostnamectl set-hostname MYHOSTNAME
 		
 ### Set up Grub:
 # Edit /etc/default/grub
@@ -215,22 +207,21 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 # set as follow : 
 	GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda3:vol0 acpi_backlight=vendor quiet"
 
-	$ mkdir /boot/EFI && mount /dev/sda1 /boot/EFI
-	$ grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
-	$ mkdir /boot/grub/locale
-	$ cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
-	$ grub-mkconfig -o /boot/grub/grub.cfg
+	$ mkdir /boot/EFI && mount /dev/sda1 /boot/EFI && grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
+	$ cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo && grub-mkconfig -o /boot/grub/grub.cfg
 		
 ### Installing KDE Plasma desktop and some extras (Optional, skip if another desktop whanted):
 
 	$ pacman -S mesa xorg plasma plasma-wayland-session sddm konsole hunspell hunspell-en_US xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox thunderbird && systemctl enable sddm.service && systemctl enable NetworkManager.service
 
-###Exiting chroot:
+### Exiting chroot. 
 
 	$ exit
- 
-### Umount everything
-	$ umount -a
+	
+### Umount everything:
+
+	$ umount -a  
 
 ### Turn off:
+
 	$ poweroff
