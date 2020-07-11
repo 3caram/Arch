@@ -175,39 +175,17 @@ $ fdisk -l
 
 	%wheel ALL=(ALL ALL)
 
-## Setup system clock and timezone:(https://wiki.archlinux.org/index.php/System_time)
-# To list available zones:
-
-	$ timedatectl list-timezones
-
-# To set your time zone:
-# timedatectl set-timezone Zone/SubZone
-# Example:
-
-	$ timedatectl set-timezone America/New_York
-
-# To enable NTP:(https://wiki.archlinux.org/index.php/Systemd-timesyncd):
-
-	$ timedatectl set-ntp true
-	$ systemctl enable systemd-timedated && systemctl enable systemd-timesyncd
-
 ## Set the hostname
 
 	$ echo MYHOSTNAME > /etc/hostname
 	$ hostnamectl set-hostname MYHOSTNAME
-
-## Setup network:
-	Edit /etc/hosts, add:
-	127.0.0.1        localhost
-	::1              localhost
-	127.0.1.1        myhostname
 		
 ### Set up Grub:
 # Edit /etc/default/grub
 # Uncomment:
 	GRUB_ENABLE_CRYPTODISK=y
 # set as follow : 
-	GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda3:vol0:allow-discards acpi_backlight=vendor quiet"
+	GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda3:vol0 acpi_backlight=vendor quiet"
 
 	$ mkdir /boot/EFI && mount /dev/sda1 /boot/EFI
 	$ grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
@@ -217,7 +195,7 @@ $ fdisk -l
 		
 ### Installing KDE Plasma desktop and some extras (Optional, skip if another desktop whanted):
 
-	$ pacman -S mesa xorg plasma plasma-wayland-session sddm konsole hunspell hunspell-en_US xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox 		thunderbird && systemctl enable sddm.service && systemctl enable NetworkManager.service
+	$ pacman -S mesa xorg plasma plasma-wayland-session sddm konsole hunspell hunspell-en_US xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox thunderbird && systemctl enable sddm.service && systemctl enable NetworkManager.service
 
 ###Exiting chroot:
 
