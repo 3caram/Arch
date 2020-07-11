@@ -13,40 +13,68 @@ The official installation guide (https://wiki.archlinux.org/index.php/Installati
 
 If the usb fails to boot, make sure that secure boot is disabled in the BIOS configuration.
 
+### If have another pc on the same network, is easier to install whith ssh terminal, having the ability to copy and paste:
+# Skip this to tupe directly the commands on target machine.
+# Permit root login
+# Check if “permit root login” is present and uncommented in “/etc/ssh/sshd_config”
+
+	$ nano /etc/ssh/sshd_config
+	
+# Start the ssh seerver:
+
+	$ systemctl start sshd
+	
+# set the password for the root live session:
+
+  $ passwd
+	
+# Determine target machine ip:
+
+	$ ifconfig
+	
+	
+# Log in as root on target machine from the other pc:
+
+	$ ssh root@ip_address_of_target_machine
+
+## Select an appropriate mirror:
+# Sync the pacman repository:
+		
+	$ pacman -Syy
+	
+# Install reflector(https://wiki.archlinux.org/index.php/Reflector) and openssh :https://wiki.archlinux.org/index.php/OpenSSh) 
+# Get the good mirror list with reflector and save it to mirrorlist. US and CA is used.
+	
+	$ pacman -S --noconfirm reflector && reflector -c "US" -f 20 -l 16 -n 20 --sort rate --save /etc/pacman.d/mirrorlist
+
 ### The default keyboard layout in the live session is US. To list all the supported keyboard layout:
 
 ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
 # And then change the layout to the an appropriate one using loadkeys command. For US alt,int:
 
-loadkeys us-acentos
+	$ loadkeys us-acentos
 
 # More at: https://wiki.archlinux.org/index.php/Linux_console/Keyboard_configuration#Loadkeys
 
 ### Check if you have UEFI mode enabled--> More at: https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
 
-$ ls /sys/firmware/efi/efivars
+	$ ls /sys/firmware/efi/efivars
 
 # If this directory exists, you have a UEFI enabled system.
 
 # More at: https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
-
-## Select an appropriate mirror
-# Sync the pacman repository:
-		
-$ yes | pacman -Syy
-
-# Now, install reflector(https://wiki.archlinux.org/index.php/Reflector):
-# Get the good mirror list with reflector and save it to mirrorlist. US and CA is used.
-	
-$ yes | pacman -S reflector && reflector -c "US" -c "CA" -f 24 -l 20 -n 24 --sort rate --save /etc/pacman.d/mirrorlist
 
 ### Partition the disks:
 # More info on partitioning formats and schemes: https://wiki.archlinux.org/index.php/Partitioning#Partition_scheme
 
 # List all the disk and partitions on your system, will tell you if is /dev/sda or something else:
 
-$ fdisk -l
+	$ fdisk -l
+
+# To delete all partitions(Carefull, skip if needed data present in drive:
+	
+	$ wipefs --all /dev/sda
 
 # Create partitions
 
@@ -94,7 +122,7 @@ $ fdisk -l
 # It installs zsh, (https://wiki.archlinux.org/index.php/microcode)
 
 
-	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 iproute2 networkmanager nano nano-syntax-highlighting reflector git
+	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 iproute2 net-tools openssh networkmanager nano nano-syntax-highlighting reflector wget curl go git
 	
 ## Enter the new system
 # Note: have to try to $ arch-chroot arch-chroot /mnt $(which zsh)
