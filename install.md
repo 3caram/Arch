@@ -120,26 +120,9 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi dosfstools os-prober mtools lvm2 iproute2 net-tools openssh networkmanager nano nano-syntax-highlighting reflector wget curl go git
 	
 ## Enter the new system
-# Note: have to try to $ arch-chroot arch-chroot /mnt $(which zsh)
-  
-	$ arch-chroot /mnt $(which zsh)
-	
-# To know what mount points are listed.
 
-	$ cat /etc/fstab
+$ arch-chroot /mnt $(which zsh)
 	
-# To know what partitions are actually mounted.
-	
-	$ cat /proc/mounts
-	
-## If any partition is NOT correctly listed:
-
-	$ rm /etc/fstab
-	
-# mount the partitions inside the chroot:
-# exit chroot
-# run genfstab -U -p /mnt >> /mnt/etc/fstab again and reenter the chroot.
-
 ## Replacing vi with nano:
 # To replace vi with nano as the default text editor set the VISUAL and EDITOR environment variables:
 
@@ -194,7 +177,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
 # Press CTRL + W and type wheel, then uncomment the following line:
 
-	%wheel ALL=(ALL ALL)
+	%wheel ALL=(ALL) ALL
 
 ## Set the hostname
 
@@ -212,7 +195,14 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 		
 ### Installing KDE Plasma desktop and some extras (Optional, skip if another desktop whanted):
 
-	$ pacman -S mesa xorg plasma plasma-wayland-session sddm konsole hunspell hunspell-en_US xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox thunderbird && systemctl enable sddm.service && systemctl enable NetworkManager.service
+	$ pacman -S --noconfirm --needed mesa xorg plasma plasma-wayland-session sddm konsole hunspell hunspell-en_US xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox thunderbird && systemctl enable sddm.service && systemctl enable NetworkManager.service && systemctl start sshd
+	
+	
+### Installing LXQT and some extras (Optional, skip if another desktop whanted):
+
+	$ pacman -S --noconfirm --needed mesa xorg sddm hunspell hunspell-en_US xdg-user-dirs ttf-dejavu vlc git firefox thunderbird lxqt breeze-icons xdg-utils xautolock xscreensaver libstatgrab libsysstat picom screengrab qterminal && systemctl enable sddm.service && systemctl enable NetworkManager.service && systemctl start sshd
+	
+	
 
 ### Exiting chroot. 
 
