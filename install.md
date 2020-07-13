@@ -13,40 +13,6 @@ The official installation guide (https://wiki.archlinux.org/index.php/Installati
 
 If the usb fails to boot, make sure that secure boot is disabled in the BIOS configuration.
 
-### If have another pc on the same network, is easier to install whith ssh terminal, having the ability to copy and paste:
-# Skip this to type directly the commands on target machine.
-# Permit root login
-# Check if “permit root login” is present and uncommented in “/etc/ssh/sshd_config”
-
-	$ nano /etc/ssh/sshd_config
-	
-# Start the ssh seerver:
-
-	$ systemctl start sshd
-	
-# set the password for the root live session:
-
-  $ passwd
-	
-# Determine target machine ip:
-
-	$ ifconfig
-	
-	
-# Log in as root on target machine from the other pc:
-
-	$ ssh root@ip_address_of_target_machine
-
-## Select an appropriate mirror:
-# Sync the pacman repository:
-		
-	$ pacman -Syy
-	
-# Install reflector(https://wiki.archlinux.org/index.php/Reflector) and openssh :https://wiki.archlinux.org/index.php/OpenSSh) 
-# Get the good mirror list with reflector and save it to mirrorlist. US and CA is used.
-	
-	$ pacman -S --noconfirm reflector && reflector -c "US" -f 20 -l 16 -n 20 --sort rate --save /etc/pacman.d/mirrorlist
-
 ### The default keyboard layout in the live session is US. To list all the supported keyboard layout:
 
 ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
@@ -65,6 +31,36 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
 # More at: https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
 
+### If have another pc on the same network, is easier to install whith ssh terminal, having the ability to copy and paste:
+# Skip this to type directly the commands on target machine.
+# Permit root login
+# Check if “permit root login” is present and uncommented in “/etc/ssh/sshd_config”
+
+	$ nano /etc/ssh/sshd_config
+	
+# Start the ssh seerver:
+
+	$ systemctl start sshd
+	
+# set the password for the root live session:
+
+  	$ passwd
+	
+# Determine target machine ip:
+
+	$ ifconfig
+	
+	
+# Log in as root on target machine from the other pc:
+
+	$ ssh root@ip_address_of_target_machine
+
+## Select an appropriate mirror:
+# Sync the pacman repository, install reflector(https://wiki.archlinux.org/index.php/Reflector).
+# Get the good mirror list with reflector and save it to mirrorlist. US is used.
+		
+	$ pacman -Syy && pacman -S --noconfirm reflector && reflector -c "US" -f 20 -l 16 -n 20 --sort rate --save /etc/pacman.d/mirrorlist
+	
 ### Partition the disks:
 # More info on partitioning formats and schemes: https://wiki.archlinux.org/index.php/Partitioning#Partition_scheme
 
@@ -80,8 +76,8 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
 	$ cfdisk /dev/sda
 		
-	1 200MB EFI partition # EFI type
-	2 300MB Boot partiton # Linux type
+	1 150MB EFI partition # EFI type
+	2 250MB Boot partiton # Linux type
 	2 100% size partiton # LVM type (to be encrypted).
 
 ### Create EFI & boot partitions
@@ -90,6 +86,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
 ### Create encrypted partitions
 # More info and to try different options: https://wiki.archlinux.org/index.php/Dm-crypt
+
 	$ cryptsetup luksFormat /dev/sda3 && cryptsetup luksOpen /dev/sda3 luks
 
 # This creates a partion for root and a partion /home:
@@ -132,7 +129,7 @@ $ arch-chroot /mnt $(which zsh)
 
 	$ nano /etc/systemd/swap.conf
 
-# Uncoment all zswap and swapfc, uncoment zram_enable=0
+# Uncoment all zswap and swapfc, uncoment zram_enable=0 and set swapfc_enabled=1
 
 	$ systemctl enable systemd-swap
 
@@ -152,18 +149,26 @@ $ arch-chroot /mnt $(which zsh)
     
 ## Generate locale
 # More at: https://wiki.archlinux.org/index.php/Locale
-# Uncomment wanted locales in /etc/locale.gen
+# Uncomment wanted locales in /etc/locale.gen and save the changes.
 	
 	nano /etc/locale.gen
+	
+# Generate locales:
+
 	$ locale-gen
+	
+# For US english ONLY:
+
+	$ echo en_US ISO-8859-1 > /etc/locale.gen && echo en_US.UTF-8 UTF-8 >> /etc/locale.gen && locale-gen
+
 	
 # To set locale system wide( Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters)
 # Pay attention to the UTF-8. Capital letters!
 
-	$ echo LANG=en_US.UTF-8 >> /etc/locale.conf && echo LC_ALL= >> /etc/locale.conf
+	$ echo LANG=en_US.UTF-8 > /etc/locale.conf && echo LC_ALL= >> /etc/locale.conf
     
 ## Add user(https://wiki.archlinux.org/index.php/Users_and_groups):
-# set the password for the root account using the passwd command:
+# set the password for the root account using the passwd command(Skip if aleardy set for SSHD set up:
 
 	$ passwd
 
@@ -193,15 +198,13 @@ $ arch-chroot /mnt $(which zsh)
 	$ mkdir /boot/EFI && mount /dev/sda1 /boot/EFI && grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
 	$ cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo && grub-mkconfig -o /boot/grub/grub.cfg
 		
-### Installing KDE Plasma desktop and some extras (Optional, skip if another desktop whanted):
+### Installing Plasma desktop and some extras (Optional, skip if another desktop whanted):
 
-	$ pacman -S --noconfirm --needed mesa xorg plasma plasma-wayland-session sddm konsole hunspell hunspell-en_US xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc git firefox thunderbird && systemctl enable sddm.service && systemctl enable NetworkManager.service && systemctl start sshd
-	
-	
-### Installing LXQT and some extras (Optional, skip if another desktop whanted):
+	$ pacman -S --noconfirm --needed xorg mesa plasma plasma-wayland-session sddm konsole hunspell hunspell-en_US xdg-user-dirs packagekit-qt5 ttf-dejavu phonon-qt5-vlc vlc firefox thunderbird libreoffice-fresh faenza-icon-theme mc && systemctl enable sddm.service && systemctl enable NetworkManager.service && systemctl enable sshd
 
-	$ pacman -S --noconfirm --needed mesa xorg sddm hunspell hunspell-en_US xdg-user-dirs ttf-dejavu vlc git firefox thunderbird lxqt breeze-icons xdg-utils xautolock xscreensaver libstatgrab libsysstat picom screengrab qterminal && systemctl enable sddm.service && systemctl enable NetworkManager.service && systemctl start sshd
-	
+### Installing Cinnamon desktop and some extras (Optional, skip if another desktop whanted):
+
+	$ pacman -S --needed xorg mesa cinnamon cinnamon-translations network-manager-applet blueberry nemo-fileroller pulseaudio pulseaudio-alsa pavucontrol sakura flashplugin geany xed xreader lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings hunspell hunspell-en_US xdg-user-dirs ttf-dejavu vlc firefox thunderbird libreoffice-fresh faenza-icon-theme gufw libgtop && systemctl enable lightdm && systemctl enable NetworkManager.service && systemctl enable sshd
 	
 
 ### Exiting chroot. 
