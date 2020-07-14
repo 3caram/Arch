@@ -17,4 +17,6 @@
     
 ### Install Yay:
     $ git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
+### Install Pamac:    
+    $ yay -S pamac-aur
 
