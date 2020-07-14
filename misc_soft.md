@@ -1,6 +1,6 @@
-### Post install LXDE soft install:
+### Post install soft:
 
-    $ sudo pacman -Syu && sudo pacman -S --needed --noconfirm mc aspell cabextract cdparanoia cdrkit cvs p7zip python-boto python-pytz samba unace unarj unrar zip curl wget go falkon filezilla converseen avidemux-qt featherpad qpdfview libreoffice-fresh doublecmd-qt5 lxqt-archiver
+    $ sudo pacman -Syu && sudo pacman -S --needed mc mesa lib32-mesa xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau aspell cabextract cdparanoia cdrkit cvs p7zip samba unace unarj unrar zip curl wget go filezilla converseen avidemux-qt libreoffice-fresh doublecmd-gtk2
 
 ### Post install Plasma soft install::
 
