@@ -114,11 +114,11 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 # It installs zsh, (https://wiki.archlinux.org/index.php/microcode)
 
 
-	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi os-prober mtools lvm2 iproute2 net-tools openssh networkmanager nano nano-syntax-highlighting reflector wget curl go git btrfs-progs dosfstools e2fsprogs exfat-utils f2fs-tools jfsutils nilfs-utils ntfs-3g reiserfsprogs udftools xfsprogs ecryptfs-utils unionfs-fuse
+	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi os-prober mtools lvm2 iproute2 net-tools openssh networkmanager nano nano-syntax-highlighting reflector wget curl go git btrfs-progs dosfstools e2fsprogs exfat-utils f2fs-tools jfsutils nilfs-utils ntfs-3g reiserfsprogs udftools xfsprogs ecryptfs-utils unionfs-fuse cronie
 	
 ## Enter the new system
 
-$ arch-chroot /mnt $(which zsh)
+	$ arch-chroot /mnt $(which zsh)
 	
 ## Replacing vi with nano:
 # To replace vi with nano as the default text editor set the VISUAL and EDITOR environment variables:
