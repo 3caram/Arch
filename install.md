@@ -123,7 +123,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 ## Replacing vi with nano:
 # To replace vi with nano as the default text editor set the VISUAL and EDITOR environment variables:
 
-	$ echo EDITOR=nano >> /etc/environment && echo VISUAL=nano >> /etc/environment
+	$ echo EDITOR=nano > /etc/environment && echo VISUAL=nano >> /etc/environment
 
 ## Setup systemd-swap:
 
