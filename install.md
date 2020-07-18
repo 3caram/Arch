@@ -32,9 +32,9 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 # More at: https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
 
 ### If have another pc on the same network, is easier to install whith ssh terminal, having the ability to copy and paste:
-# Skip this to type directly the commands on target machine.
-# Permit root login
-# Check if “permit root login” is present and uncommented in “/etc/ssh/sshd_config”
+### Skip this to type directly the commands on target machine.
+### Permit root login
+### Check if “permit root login” is present and uncommented in “/etc/ssh/sshd_config”
 
 	$ nano /etc/ssh/sshd_config
 	
@@ -59,7 +59,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 # Sync the pacman repository, install reflector(https://wiki.archlinux.org/index.php/Reflector).
 # Get the good mirror list with reflector and save it to mirrorlist. US is used.
 		
-	$ pacman -Syy && pacman -S --noconfirm reflector && reflector -c "US" -f 20 -l 16 -n 20 --sort rate --save /etc/pacman.d/mirrorlist
+	$ pacman -Syy --noconfirm reflector && reflector -c "US" -f 20 -l 16 -n 20 --sort rate --save /etc/pacman.d/mirrorlist
 	
 ### Partition the disks:
 # More info on partitioning formats and schemes: https://wiki.archlinux.org/index.php/Partitioning#Partition_scheme
