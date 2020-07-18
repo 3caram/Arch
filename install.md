@@ -188,13 +188,13 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
 	$ echo MYHOSTNAME > /etc/hostname && hostnamectl set-hostname MYHOSTNAME
 		
-### Set up Grub:
+### Grub:
 # Edit /etc/default/grub
 # Uncomment:
 	GRUB_ENABLE_CRYPTODISK=y
-# set as follow : 
+# Set the line GRUB_CMDLINE_LINUX_DEFAULT as follow : 
 	GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda3:vol0 acpi_backlight=vendor quiet"
-
+# Then:
 	$ mkdir /boot/EFI && mount /dev/sda1 /boot/EFI && grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
 	$ cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo && grub-mkconfig -o /boot/grub/grub.cfg
 		
