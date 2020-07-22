@@ -174,7 +174,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 
 # Add a system user:
 
-	$ useradd -m -g users -G wheel,storage,network,uucp,autologin,games,power,optical,scanner,lp,audio,video -s $(which zsh) MYUSERNAME && passwd MYUSERNAME
+	$ groupadd -r autologin && useradd -m -g users -G wheel,storage,network,uucp,autologin,games,power,optical,scanner,lp,audio,video -s $(which zsh) MYUSERNAME && passwd MYUSERNAME
 
 # Allow the system user to use sudo and run commands (temporary) as root:
 
