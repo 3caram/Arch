@@ -1,4 +1,4 @@
-### (AMDGPU)Post install soft:
+### (AMDGPU)Post install misc soft:
 
     $ sudo pacman -Syu && sudo pacman -S --needed mc mesa lib32-mesa xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau libva libva-vdpau-driver libvdpau-va-gl pepper-flash chromium aspell cabextract cdparanoia cdrkit cvs p7zip samba unace unarj unrar zip curl wget go filezilla converseen avidemux-qt libreoffice-fresh doublecmd-gtk2
 
