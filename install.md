@@ -88,11 +88,10 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 ## Install the system 
 # It installs linux-zen(https://wiki.archlinux.org/index.php/Kernel):
 # It installs systemd-swap(https://github.com/Nefelim4ag/systemd-swap/blob/master/README.md#about-configuration):
-# It installs amd-ucode for amd, for intel would be intel-ucode (https://wiki.archlinux.org/index.php/microcode)
 # It installs zsh, (https://wiki.archlinux.org/index.php/microcode)
 
 # No graphical interface.
-	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi os-prober mtools lvm2 iproute2 net-tools openssh networkmanager nano nano-syntax-highlighting reflector wget curl go git btrfs-progs dosfstools e2fsprogs exfat-utils f2fs-tools jfsutils nilfs-utils ntfs-3g reiserfsprogs udftools xfsprogs ecryptfs-utils unionfs-fuse cronie 
+	$ pacstrap /mnt zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi os-prober mtools lvm2 iproute2 net-tools openssh networkmanager nano nano-syntax-highlighting reflector wget curl go git btrfs-progs dosfstools e2fsprogs exfat-utils f2fs-tools jfsutils nilfs-utils ntfs-3g reiserfsprogs udftools xfsprogs ecryptfs-utils unionfs-fuse cronie 
 	
 # With XFCE desktop.
 	$ pacstrap /mnt amd-ucode zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config linux-zen linux-zen-headers linux-firmware base base-devel systemd sudo systemd-swap efibootmgr grub acpi os-prober mtools lvm2 iproute2 net-tools openssh networkmanager nano nano-syntax-highlighting reflector wget curl go git btrfs-progs dosfstools e2fsprogs exfat-utils f2fs-tools jfsutils nilfs-utils ntfs-3g reiserfsprogs udftools xfsprogs ecryptfs-utils unionfs-fuse cronie xorg mesa xorg-xkill xfce4 xfce4-goodies libcanberra libcanberra-pulse sound-theme-freedesktop xfce4-pulseaudio-plugin pulseaudio pulseaudio-alsa pavucontrol bluez bluez-utils blueman gvfs flashplugin geany xed xreader lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings hunspell hunspell-en_US xdg-user-dirs ttf-dejavu vlc firefox thunderbird libreoffice-fresh faenza-icon-theme gufw libgtop mc xdg-user-dirs
