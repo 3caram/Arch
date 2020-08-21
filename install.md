@@ -136,6 +136,22 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 	
 # To set locale system wide( Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters)# Pay attention to the UTF-8. Capital letters!
 	$ echo LANG=en_US.UTF-8 > /etc/locale.conf && echo LC_ALL= >> /etc/locale.conf
+
+# Time & Date:
+Usage in the form: ln -sf /usr/share/zoneinfo/Zone/SubZone /etc/localtime
+For US eastern:
+
+	$ ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+	$ nano /etc/systemd/timesyncd.conf
+	[Time]
+	NTP=0.us.pool.ntp.org 1.us.pool.ntp.org 2.us.pool.ntp.org 3.us.pool.ntp.org
+	$ timedatectl set-ntp true
+
+# To set locale system wide( Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters)# Pay attention to the UTF-8. Capital letters!
+
+  $ echo LANG=en_US.UTF-8 > /etc/locale.conf && echo LC_ALL= >> /etc/locale.conf
+
+timedatectl set-local-rtc 0
     
 ## Add user(https://wiki.archlinux.org/index.php/Users_and_groups):
 # set the password for the root account using the passwd command(Skip if aleardy set for SSHD set up:
@@ -164,13 +180,13 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 	$ cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo && grub-mkconfig -o /boot/grub/grub.cfg
 		
 ## No desktop:
-	$ systemctl enable systemd-swap && systemctl enable NetworkManager.service && systemctl enable sshd
+	$ systemctl enable systemd-swap && systemctl enable NetworkManager.service && systemctl enable sshd && systemctl enable systemd-timesyncd.service
 
 ## For Plasma desktop:
-	$ systemctl enable systemd-swap && systemctl enable sddm.service && systemctl enable NetworkManager.service && systemctl enable sshd
+	$ systemctl enable systemd-swap && systemctl enable sddm.service && systemctl enable NetworkManager.service && systemctl enable sshd && systemctl enable systemd-timesyncd.service
 
 ## For XFCE desktop:
-	$ systemctl enable systemd-swap && systemctl enable lightdm.service && systemctl enable NetworkManager.service && systemctl enable sshd
+	$ systemctl enable systemd-swap && systemctl enable lightdm.service && systemctl enable NetworkManager.service && systemctl enable sshd && systemctl enable systemd-timesyncd.service
 
 ### Exiting chroot.
 	$ exit
