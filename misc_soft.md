@@ -4,7 +4,7 @@
     $ sudo pacman -Syu intel-ucode mesa lib32-mesa vulkan-intel libva-intel-driver intel-media-driver libvdpau-va-gl libva-vdpau-driver
 
 ### Post install Plasma soft install:
-    $ sudo pacman -Syu && sudo pacman -S --needed --noconfirm mc aspell cabextract cdparanoia cdrkit cvs p7zip python-boto python-pytz samba unace unarj unrar zip curl wget go kate okular ark dolphin dolphin-plugins kompare kdegraphics-thumbnailers kimageformats qt5-imageformats kdesdk-thumbnailers ffmpegthumbs raw-thumbnailer taglib falkon filezilla avidemux-qt libreoffice-fresh doublecmd-qt5
+    $ sudo pacman -Syu && sudo pacman -S --needed --noconfirm mc aspell cabextract cdparanoia cdrkit cvs p7zip python-boto python-pytz samba unace unarj unrar zip go kate okular ark dolphin dolphin-plugins kompare kdegraphics-thumbnailers kimageformats qt5-imageformats kdesdk-thumbnailers ffmpegthumbs raw-thumbnailer taglib falkon filezilla avidemux-qt libreoffice-fresh doublecmd-qt5
     
 ### Post install ZSH:
     $ sudo pacman -S  zsh zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions grml-zsh-config zsh-syntax-highlighting zsh-autosuggestions
