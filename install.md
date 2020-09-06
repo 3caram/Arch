@@ -5,7 +5,7 @@ The official installation guide (https://wiki.archlinux.org/index.php/Installati
 * Image from https://www.archlinux.org/
 
 ### Copy to a USB drive
-Rufus for Windows or Etcher in linux are good options.
+Rufus(Windows) or Etcher(any other desktop os) are good options.
 
 ### Boot from USB drive
 If the usb fails to boot, make sure that secure boot is disabled in the BIOS configuration.
@@ -65,7 +65,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 	2 100% size partiton # LVM type (to be encrypted).
 
 ### Create EFI & boot partitions
-	$ mkfs.vfat -F32 /dev/sda1 && mkfs.ext4 /dev/sda2
+	$ mkfs.vfat -F32 /dev/sda1 && mkfs.ext2 /dev/sda2
 
 ### Create encrypted partitions
 # More info and to try different options: https://wiki.archlinux.org/index.php/Dm-crypt
@@ -76,7 +76,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 	$ lvcreate -L 60GB vol0 -n vol_root && lvcreate -l 100%FREE vol0 -n vol_home
 
 ### Create filesystems on encrypted partitions  
-	$ mkfs.ext4 /dev/vol0/vol_root && mkfs.ext4 /dev/vol0/vol_home
+	$ mkfs.btrfs /dev/vol0/vol_root && mkfs.btrfs /dev/vol0/vol_home
 		
 ## Mount the new system
 	$ mount /dev/vol0/vol_root /mnt && mkdir /mnt/boot && mount /dev/sda2 /mnt/boot
@@ -105,21 +105,15 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 ## Replacing vi with nano:
 # To replace vi with nano as the default text editor set the VISUAL and EDITOR environment variables:
 	$ echo EDITOR=nano > /etc/environment && echo VISUAL=nano >> /etc/environment
-
-## Setup systemd-swap, uncoment all zswap and swapfc, uncoment zram_enable=0 and set swapfc_enabled=1:
-	$ nano /etc/systemd/swap.conf
 	
-## Configure mkinitcpio with modules needed for the initrd image
-# Important: lvm2 must be installed inside the arch-chroot for mkinitcpio to find the lvm2 or mkinitcpio will output Error: Hook 'lvm2' cannot be found   
-	$ nano /etc/mkinitcpio.conf
-
-# Edit the /etc/mkinitcpio.conf
-	$ nano /etc/mkinitcpio.conf
-# Look for the HOOKS variable and add encrypt and lvm2 after keyboard. Like:
-	HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)
-
-## Regenerate initrd image
-	$ mkinitcpio -p linux-zen
+## Set the hostname
+# Edit hosts file:
+	$ nano /etc/hosts
+		127.0.0.1			localhost
+		::1						localhost
+		127.0.1.1			myhostname.localdomain    myhostname
+	$ echo myhostname > /etc/hostname && hostnamectl set-hostname myhostname
+	
     
 ## Generate locale
 # More at: https://wiki.archlinux.org/index.php/Locale
@@ -131,14 +125,13 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 	
 # For US english ONLY:
 	$ echo en_US ISO-8859-1 > /etc/locale.gen && echo en_US.UTF-8 UTF-8 >> /etc/locale.gen && locale-gen
-
 	
 # To set locale system wide( Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters)# Pay attention to the UTF-8. Capital letters!
 	$ echo LANG=en_US.UTF-8 > /etc/locale.conf && echo LC_ALL= >> /etc/locale.conf
 
-# Time & Date:
-Usage in the form: ln -sf /usr/share/zoneinfo/Zone/SubZone /etc/localtime
-For US eastern:
+## Time & Date:
+# Usage in the form: ln -sf /usr/share/zoneinfo/Zone/SubZone /etc/localtime
+# For US eastern:
 
 	$ ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
 	$ nano /etc/systemd/timesyncd.conf
@@ -148,7 +141,6 @@ For US eastern:
 	$ timedatectl set-ntp true
 	
 # To set locale system wide( Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters)# Pay attention to the UTF-8. Capital letters!
-
   $ echo LANG=en_US.UTF-8 > /etc/locale.conf && echo LC_ALL= >> /etc/locale.conf
     
 ## Add user(https://wiki.archlinux.org/index.php/Users_and_groups):
@@ -163,12 +155,24 @@ For US eastern:
 
 # Press CTRL + W and type wheel, then uncomment the following line:
 	%wheel ALL=(ALL) ALL
+	
+## Setup systemd-swap, uncoment all zswap and swapfc, uncoment zram_enable=0 and set swapfc_enabled=1:
+  $ nano /etc/systemd/swap.conf  
 
-## Set the hostname
-	$ echo MYHOSTNAME > /etc/hostname && hostnamectl set-hostname MYHOSTNAME
+## Configure mkinitcpio with modules needed for the initrd image
+# Important: lvm2 must be installed inside the arch-chroot for mkinitcpio to find the lvm2 or mkinitcpio will output Error: Hook 'lvm2' cannot be found   
+# Edit the /etc/mkinitcpio.conf
+  $ nano /etc/mkinitcpio.conf
+
+# Look for the HOOKS variable and add encrypt and lvm2 after keyboard. Like:
+  HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)
+
+## Regenerate initrd image
+  $ mkinitcpio -p linux-zen
 		
 ### Grub:
-# Edit /etc/default/grub
+# Edit 
+	$ nano /etc/default/grub
 # Uncomment:
 	GRUB_ENABLE_CRYPTODISK=y
 # Set the line GRUB_CMDLINE_LINUX_DEFAULT as follow : 
