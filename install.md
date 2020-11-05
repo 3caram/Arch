@@ -140,9 +140,6 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 	$ timedatectl set-local-rtc 0
 	$ timedatectl set-ntp true
 	
-# To set locale system wide( Do NOT set LC_ALL=C. It overrides all the locale vars and messes up special characters)# Pay attention to the UTF-8. Capital letters!
-  $ echo LANG=en_US.UTF-8 > /etc/locale.conf && echo LC_ALL= >> /etc/locale.conf
-    
 ## Add user(https://wiki.archlinux.org/index.php/Users_and_groups):
 # set the password for the root account using the passwd command(Skip if aleardy set for SSHD set up:
 	$ passwd
@@ -182,13 +179,13 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 	$ cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo && grub-mkconfig -o /boot/grub/grub.cfg
 		
 ## No desktop:
-	$ systemctl enable systemd-swap && systemctl enable NetworkManager.service && systemctl enable sshd && systemctl enable systemd-timesyncd.service
+	$ systemctl enable systemd-swap && systemctl enable NetworkManager.service && systemctl enable sshd && systemctl enable systemd-timesyncd.service && systemctl enable cronie.service
 
 ## For Plasma desktop:
-	$ systemctl enable systemd-swap && systemctl enable sddm.service && systemctl enable NetworkManager.service && systemctl enable sshd && systemctl enable systemd-timesyncd.service
+	$ systemctl enable systemd-swap && systemctl enable sddm.service && systemctl enable NetworkManager.service && systemctl enable sshd && systemctl enable systemd-timesyncd.service && systemctl enable cronie.service
 
 ## For XFCE desktop:
-	$ systemctl enable systemd-swap && systemctl enable lightdm.service && systemctl enable NetworkManager.service && systemctl enable sshd && systemctl enable systemd-timesyncd.service
+	$ systemctl enable systemd-swap && systemctl enable lightdm.service && systemctl enable NetworkManager.service && systemctl enable sshd && systemctl enable systemd-timesyncd.service && systemctl enable cronie.service
 
 ### Exiting chroot.
 	$ exit
