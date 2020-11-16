@@ -55,7 +55,7 @@ ls /usr/share/kbd/keymaps/i386/qwerty/*.map.gz
 	$ fdisk -l
 
 # To delete all partitions(Carefull, skip if needed data present in drive:	
-	$ wipefs --all /dev/sda
+	$ wipefs --all --force /dev/sda
 
 # Create partitions
 	$ cfdisk /dev/sda
