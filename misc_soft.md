@@ -1,5 +1,5 @@
 ### (AMD)Post install:
-    $ sudo pacman -Syu --needed amd-ucode mesa xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau libva libva-vdpau-driver libvdpau-va-gl
+    $ sudo pacman -Syu --needed amd-ucode lib32-libva-mesa-driver lib32-mesa lib32-mesa-vdpau lib32-vulkan-icd-loader lib32-vulkan-radeon libva libva-mesa-driver libva-vdpau-driver libvdpau-va-gl mesa mesa-vdpau vulkan-icd-loader vulkan-radeon xf86-video-amdgpu
 ### (Intel)Post install:
     $ sudo pacman -Syu intel-ucode mesa vulkan-intel libva-intel-driver intel-media-driver libvdpau-va-gl libva-vdpau-driver
 
