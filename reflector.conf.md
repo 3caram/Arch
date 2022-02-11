@@ -1,6 +1,7 @@
     $ sudo nano /etc/xdg/reflector/reflector.conf
 
     --save /etc/pacman.d/mirrorlist
+    --protocol https
     --delay 0.25
     --latest 20
     --fastest 20
