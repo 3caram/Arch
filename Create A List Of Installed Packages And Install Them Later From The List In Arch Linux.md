@@ -4,6 +4,10 @@
         
 ### Import and install from the list:
 
-        paru -Syu - < pkglist.txt
+        paru -Syu - < pkglist.txt   
+        
+### Remove packages not in the list:
+
+        paru -Rsu $(comm -23 <(paru -Qq | sort) <(sort pkglist.txt))
 
 
