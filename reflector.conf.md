@@ -1,4 +1,4 @@
-    $ sudo nano /etc/xdg/reflector/reflector.conf
+    sudo nano /etc/xdg/reflector/reflector.conf
 
     --save /etc/pacman.d/mirrorlist
     --protocol https
@@ -9,4 +9,4 @@
     --download-timeout 2
     --sort rate
 
-    $ sudo systemctl enable --now reflector.service
+    sudo systemctl enable --now reflector.service
