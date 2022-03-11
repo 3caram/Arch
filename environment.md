@@ -1,7 +1,11 @@
-QT_QPA_PLATFORM=wayland
-#QT_QPA_PLATFORMTHEME=qt5ct
-#QT_STYLE_OVERRIDE=kvantum
-MOZ_ENABLE_WAYLAND=1
-BROWSER=firefox
-EDITOR=nano
-VISUAL=nano
+	QT_QPA_PLATFORM=wayland
+	XDG_SESSION_TYPE=wayland
+	DESKTOP_SESSION=plasmawayland
+	MOZ_ENABLE_WAYLAND=1
+	LANG=en_US.UTF-8
+	EDITOR=nano
+	VISUAL=nano
+	SHELL=/bin/fish
+	BROWSER=firefox
+	MAIL=thunderbird
+	
