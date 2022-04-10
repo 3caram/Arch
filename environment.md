@@ -1,11 +1,14 @@
-	QT_QPA_PLATFORM=wayland
-	XDG_SESSION_TYPE=wayland
-	DESKTOP_SESSION=plasmawayland
-	MOZ_ENABLE_WAYLAND=1
-	LANG=en_US.UTF-8
-	EDITOR=nano
-	VISUAL=nano
-	SHELL=/bin/fish
-	BROWSER=firefox
-	MAIL=thunderbird
-	
+        LANG=en_US.UTF-8
+        MAIL=thunderbird
+        BROWSER=firefox
+        MOZ_ENABLE_WAYLAND=1
+        DESKTOP_SESSION=plasmawayland
+        GDK_BACKEND=wayland,x11
+        GTK_BACKEND=wayland
+        QT_QPA_PLATFORM=wayland
+        SDL_VIDEODRIVER=wayland
+        XDG_SESSION_TYPE=wayland
+        EDITOR=nano
+        VISUAL=nano
+        SHELL=/bin/bash
+        QTWEBENGINE_CHROMIUM_FLAGS=--blink-settings=forceDarkModeEnabled=true
