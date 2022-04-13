@@ -1,14 +1,12 @@
-        LANG=en_US.UTF-8
-        MAIL=thunderbird
-        BROWSER=firefox
-        MOZ_ENABLE_WAYLAND=1
-        DESKTOP_SESSION=plasmawayland
-        GDK_BACKEND=wayland,x11
-        GTK_BACKEND=wayland
-        QT_QPA_PLATFORM=wayland
-        SDL_VIDEODRIVER=wayland
-        XDG_SESSION_TYPE=wayland
-        EDITOR=nano
-        VISUAL=nano
-        SHELL=/bin/bash
-        QTWEBENGINE_CHROMIUM_FLAGS=--blink-settings=forceDarkModeEnabled=true
+LANG=en_US.UTF-8
+MOZ_ENABLE_WAYLAND=1
+DESKTOP_SESSION=plasmawayland
+GDK_BACKEND=wayland,x11
+GTK_BACKEND=wayland
+QT_QPA_PLATFORM="wayland;xcb"
+SDL_VIDEODRIVER=wayland
+XDG_SESSION_TYPE=wayland
+EDITOR=nano
+VISUAL=nano
+SHELL=/bin/bash
+QTWEBENGINE_CHROMIUM_FLAGS=--blink-settings=forceDarkModeEnabled=true
