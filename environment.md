@@ -9,4 +9,5 @@ XDG_SESSION_TYPE=wayland
 EDITOR=nano
 VISUAL=nano
 SHELL=/bin/bash
+DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 QTWEBENGINE_CHROMIUM_FLAGS=--blink-settings=forceDarkModeEnabled=true
