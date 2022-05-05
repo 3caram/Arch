@@ -1,4 +1,4 @@
-    sudo nano /etc/xdg/reflector/reflector.conf
+    sudo micro /etc/xdg/reflector/reflector.conf
 
     --save /etc/pacman.d/mirrorlist
     --protocol https
