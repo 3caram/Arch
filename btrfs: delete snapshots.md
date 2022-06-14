@@ -6,5 +6,6 @@
 	...
 	btrfs property set -ts /backup/.snapshots/1/snapshot/ ro false
 #Now delete the snapper config:	
+
 	snapper -v -c backup delete-config
 	
