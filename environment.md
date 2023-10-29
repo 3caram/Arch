@@ -10,5 +10,9 @@ EDITOR=micro
 VISUAL=micro
 SHELL=/bin/bash
 QTWEBENGINE_CHROMIUM_FLAGS=--blink-settings=forceDarkModeEnabled=true
+DXVK_ASYNC=1
 AMD_VULKAN_ICD=RADV
+RADV_FORCE_VRS=2x2
 RADV_PERFTEST=sam
+VKD3D_CONFIG=no_upload_hvv
+RADV_DEBUG=novrsflatshading
