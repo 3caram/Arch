@@ -6,8 +6,8 @@ GTK_USE_PORTAL=1
 QT_QPA_PLATFORM="wayland;xcb"
 SDL_VIDEODRIVER=wayland
 XDG_SESSION_TYPE=wayland
-EDITOR=micro
-VISUAL=micro
+EDITOR=/usr/bin/micro
+VISUAL=/usr/bin/micro
 SHELL=/bin/bash
 QTWEBENGINE_CHROMIUM_FLAGS=--blink-settings=forceDarkModeEnabled=true
 DXVK_ASYNC=1
